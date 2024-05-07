@@ -15,7 +15,6 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem'; // Import MenuItem
 
 const ResultsTable = () => {
-  // const { username } = useContext(UsernameContext);
   const [results, setResults] = useState([]);
   const [statusFilter, setStatusFilter] = useState(''); // State for status filter
 
@@ -59,7 +58,6 @@ const ResultsTable = () => {
             onChange={handleStatusChange}
             placeholder="All"
             sx={{ marginLeft: '20px', width: '150px' }}
-            // sx={{ position: 'relative', top: '60px', right: '50px' }}
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="0">Pending</MenuItem>
@@ -99,7 +97,6 @@ const ResultsTable = () => {
                             padding: '5px 42px',
                             borderRadius: '4px',
                             cursor: 'pointer'
-                            // display: 'inline-block'
                           }}
                         >
                           Pending

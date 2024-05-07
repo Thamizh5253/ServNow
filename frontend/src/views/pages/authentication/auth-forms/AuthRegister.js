@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // material-ui
@@ -9,7 +8,6 @@ import {
   Box,
   Button,
   Checkbox,
-  // Divider,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -28,17 +26,12 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
-// import useScriptRef from 'hooks/useScriptRef';
-// import Google from 'assets/images/icons/social-google.svg';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-// import { useHistory } from 'react-router-dom';
-
-// import axios from 'axios'; // Import axios
 
 // ===========================|| SERVNOW - REGISTER ||=========================== //
 
@@ -57,18 +50,12 @@ const FirebaseRegister = ({ ...others }) => {
     role: 'user'
   };
   const theme = useTheme();
-  // const scriptedRef = useScriptRef();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-  // const customization = useSelector((state) => state.customization);
   const [showPassword, setShowPassword] = useState(false);
   const [checked, setChecked] = useState(false);
 
   const [strength, setStrength] = useState(0);
   const [level, setLevel] = useState();
-
-  // const googleHandler = async () => {
-  //   console.error('Register');
-  // };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -87,66 +74,10 @@ const FirebaseRegister = ({ ...others }) => {
   useEffect(() => {
     changePassword('');
   }, []);
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   console.log(formData);
-  //   try {
-  //     // Send form data to the server
-  //     const response = await axios.post('http://localhost:5000/api/register', formData);
 
-  //     // Handle response (e.g., show success message)
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     // Handle errors (e.g., show error message)
-  //     console.error('Error:', error);
-  //   }
-  // };
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        {/* <Grid item xs={12}>
-          <AnimateButton>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={googleHandler}
-              size="large"
-              sx={{
-                color: 'grey.700',
-                backgroundColor: theme.palette.grey[50],
-                borderColor: theme.palette.grey[100]
-              }}
-            >
-              <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
-              </Box>
-              Sign up with Google
-            </Button>
-          </AnimateButton>
-        </Grid>
-        <Grid item xs={12}>
-          <Box sx={{ alignItems: 'center', display: 'flex' }}>
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-            <Button
-              variant="outlined"
-              sx={{
-                cursor: 'unset',
-                m: 2,
-                py: 0.5,
-                px: 7,
-                borderColor: `${theme.palette.grey[100]} !important`,
-                color: `${theme.palette.grey[900]}!important`,
-                fontWeight: 500,
-                borderRadius: `${customization.borderRadius}px`
-              }}
-              disableRipple
-              disabled
-            >
-              OR
-            </Button>
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-          </Box>
-        </Grid> */}
         <Grid item xs={12} container alignItems="center" justifyContent="center">
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle1">Sign up with Email address</Typography>
@@ -157,9 +88,8 @@ const FirebaseRegister = ({ ...others }) => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async (values, { setErrors, setSubmitting }) => {
+        onSubmit={async (values, { setErrors, setSubmitting, setValues }) => {
           if (checked) {
-            console.log(values);
             try {
               const response = await fetch('http://localhost:5000/api/register', {
                 method: 'POST',
@@ -170,10 +100,7 @@ const FirebaseRegister = ({ ...others }) => {
               });
               const data = await response.json();
 
-              console.log(data.message);
-
               if (response.ok) {
-                // console.log('success');
                 toast.success('User Registered Successfully!', {
                   position: 'top-right',
                   autoClose: 5000,
@@ -183,10 +110,8 @@ const FirebaseRegister = ({ ...others }) => {
                   draggable: true,
                   progress: undefined,
                   theme: 'light'
-                  // transition: Bounce
                 });
-
-                // navigate('/pages/login/login3');
+                setValues(initialValues);
               } else if (data.message === 'User already exists') {
                 toast.warn('User Already Exist!', {
                   position: 'top-right',
@@ -197,7 +122,6 @@ const FirebaseRegister = ({ ...others }) => {
                   draggable: true,
                   progress: undefined,
                   theme: 'light'
-                  // transition: Bounce
                 });
               } else {
                 const data = await response.json();
@@ -218,7 +142,6 @@ const FirebaseRegister = ({ ...others }) => {
               draggable: true,
               progress: undefined,
               theme: 'light'
-              // transition: Bounce
             });
           }
         }}
@@ -262,8 +185,9 @@ const FirebaseRegister = ({ ...others }) => {
                 name="email"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                inputProps={{}}
+                inputProps={{ defaultValue: '' }}
               />
+
               {touched.email && errors.email && (
                 <FormHelperText error id="standard-weight-helper-text--register">
                   {errors.email}

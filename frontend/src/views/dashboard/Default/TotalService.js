@@ -76,12 +76,19 @@ const TotalIncomeDarkCard = ({ isLoading, totalService }) => {
                     mb: 0.45
                   }}
                   primary={
-                    <Typography variant="h4" sx={{ color: '#fff' }}>
+                    <Typography variant="h3" sx={{ color: '#fff' }}>
                       {totalService}
                     </Typography>
                   }
                   secondary={
-                    <Typography variant="subtitle2" sx={{ color: 'primary.light', mt: 0.25 }}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        fontSize: '15px',
+                        color: 'primary.light',
+                        mt: 0.25
+                      }}
+                    >
                       {role === 'admin' ? 'Total Booking' : 'Total Services'}
                     </Typography>
                   }

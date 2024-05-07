@@ -38,7 +38,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
 
-const TotalIncomeLightCard = ({ isLoading, ready }) => {
+const ReadyService = ({ isLoading, ready }) => {
   const theme = useTheme();
 
   return (
@@ -69,11 +69,12 @@ const TotalIncomeLightCard = ({ isLoading, ready }) => {
                     mt: 0.45,
                     mb: 0.45
                   }}
-                  primary={<Typography variant="h4">{ready}</Typography>}
+                  primary={<Typography variant="h3">{ready}</Typography>}
                   secondary={
                     <Typography
                       variant="subtitle2"
                       sx={{
+                        fontSize: '15px',
                         color: theme.palette.grey[500],
                         mt: 0.5
                       }}
@@ -91,8 +92,8 @@ const TotalIncomeLightCard = ({ isLoading, ready }) => {
   );
 };
 
-TotalIncomeLightCard.propTypes = {
+ReadyService.propTypes = {
   isLoading: PropTypes.bool
 };
 
-export default TotalIncomeLightCard;
+export default ReadyService;

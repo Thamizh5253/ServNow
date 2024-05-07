@@ -21,14 +21,12 @@ const BookingHistory = Loadable(lazy(() => import('views/utilities/BookingHistor
 const ManageBooking = Loadable(lazy(() => import('views/utilities/ManageBooking')));
 const EditServices = Loadable(lazy(() => import('views/utilities/EditServices')));
 const AddServices = Loadable(lazy(() => import('views/utilities/AddServices')));
-const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // Combine both authentication and main routes
 
 export default function ThemeRoutes() {
   const { auth } = useContext(UsernameContext);
 
-  // console.log(role);
   const MainRoutes = {
     path: '/',
     element: <MainLayout />,
@@ -68,8 +66,7 @@ export default function ThemeRoutes() {
           }
         ]
       },
-      // console.log(role);
-      // role === 'user' &&
+
       {
         path: 'manageservices',
         children: [
@@ -82,10 +79,6 @@ export default function ThemeRoutes() {
             element: <EditServices />
           }
         ]
-      },
-      {
-        path: 'sample-page',
-        element: <SamplePage />
       }
     ]
   };

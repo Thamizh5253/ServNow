@@ -11,7 +11,6 @@ const NavGroup = ({ item }) => {
 
   // Access the role from context
   const { role } = useContext(UsernameContext);
-  // console.log(item);
   // Filter menu items based on role
   const filteredItems = item.children?.filter((menu) => {
     if (role === 'admin') {

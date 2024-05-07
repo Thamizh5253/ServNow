@@ -1,29 +1,30 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import TextField from '@mui/material/TextField';
 
+import Modal from '@mui/material/Modal';
 // material-ui
 import { useTheme } from '@mui/material/styles';
+import { toast } from 'react-toastify';
+
 import {
   Avatar,
   Box,
-  // Card,
-  // CardContent,
+  Grid,
+  Button,
   Chip,
   ClickAwayListener,
   Divider,
-  // Grid,
   InputAdornment,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  OutlinedInput,
   Paper,
   Popper,
   Stack,
-  // Switch,
   Typography
 } from '@mui/material';
 
@@ -33,11 +34,12 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-// import UpgradePlanCard from './UpgradePlanCard';
 import User1 from 'assets/images/users/user-round.svg';
 
 // assets
-import { IconLogout, IconSearch, IconSettings } from '@tabler/icons-react';
+import { IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { IconLogout, IconSettings } from '@tabler/icons-react';
 import axios from 'axios';
 import { useContext } from 'react';
 import UsernameContext from '../../../../views/context/context';
@@ -49,48 +51,128 @@ const ProfileSection = () => {
 
   const { username, setProfile, profile, setAuth } = useContext(UsernameContext);
 
+  const [formData, setFormData] = useState({
+    email: '',
+    fname: '',
+    lname: '',
+    mobile: '',
+    password: ''
+  });
+  const [openEdit, setOpenEdit] = React.useState(false);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+  const [showPassword, setShowPassword] = useState(false);
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4
+  };
+  const handleEditModal = async () => {
+    //fetching data to Edit
+    try {
+      const response = await axios.get(`http://localhost:5000/api/fetchEditAccountInfo/${username}`);
+      setFormData(response.data);
+      // setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+    console.log(username);
+    // setId(id);
+    setOpenEdit(true);
+  };
+
+  const handleEditSubmit = async (event) => {
+    event.preventDefault();
+
+    console.log(formData);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/storeEditedUserData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: username, formData: formData })
+      });
+      // console.log(response);
+      if (response.ok) {
+        toast.success('User Data Edited successfully!', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light'
+        });
+        // setchangeInTable(!changeInTable);
+        handleEditClose();
+        // console.log('Service Edited successfully');
+      } else {
+        toast.error(` Please provide required Datas !`, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light'
+        });
+        // console.log('Please provide required Datas');
+      }
+    } catch (error) {
+      console.error('Error while Adding:', error);
+    }
+  };
+  const handleEditClose = () => setOpenEdit(false);
+
   useEffect(() => {
     const fetchUsername = async () => {
       try {
         const response = await fetch(`http://localhost:5000/api/fetchusername/${username}`);
         const data = await response.json();
-        // console.log('fetch', data);
+
         if (data) {
           const user = data[0].fname + ' ' + data[0].lname;
           setProfile(user);
-          // console.log(user);
         }
-        //  setProfile('Rama');
       } catch (error) {
         console.error('Error fetching results:', error);
       }
     };
-    // setProfile('Dhanush');
+
     fetchUsername();
   }, [username]);
-  // const name = useContext(UsernameContext);
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
-  // const navigate = useNavigate();
 
-  // const [sdm, setSdm] = useState(true);
-  const [value, setValue] = useState('');
-  // const [notification, setNotification] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef(null);
-  // const handleLogout = async () => {
-  //   console.log('Logout');
-  // };
+
   const handleLogout = () =>
     axios
       .get('http://localhost:5000/logout')
       .then((res) => {
-        // location.reload(true);
-
         navigate('/pages/login/login3');
         setAuth(false);
         console.log(res.message);
@@ -103,14 +185,6 @@ const ProfileSection = () => {
     setOpen(false);
   };
 
-  const handleListItemClick = (event, index, route = '') => {
-    setSelectedIndex(index);
-    handleClose(event);
-
-    if (route && route !== '') {
-      navigate(route);
-    }
-  };
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
@@ -199,73 +273,12 @@ const ProfileSection = () => {
                           {profile}
                         </Typography>
                       </Stack>
-                      {/* <Typography variant="subtitle2">Project Admin</Typography> */}
                     </Stack>
-                    <OutlinedInput
-                      sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
-                      id="input-search-profile"
-                      value={value}
-                      onChange={(e) => setValue(e.target.value)}
-                      placeholder="Search profile options"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
-                        </InputAdornment>
-                      }
-                      aria-describedby="search-helper-text"
-                      inputProps={{
-                        'aria-label': 'weight'
-                      }}
-                    />
-                    <Divider />
                   </Box>
                   <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                     <Box sx={{ p: 2 }}>
-                      {/* <UpgradePlanCard /> */}
-                      {/* <Divider /> */}
-                      {/* <Card
-                        sx={{
-                          bgcolor: theme.palette.primary.light,
-                          my: 2
-                        }}
-                      >
-                        <CardContent>
-                          <Grid container spacing={3} direction="column">
-                            <Grid item>
-                              <Grid item container alignItems="center" justifyContent="space-between">
-                                <Grid item>
-                                  <Typography variant="subtitle1">Start DND Mode</Typography>
-                                </Grid>
-                                <Grid item>
-                                  <Switch
-                                    color="primary"
-                                    checked={sdm}
-                                    onChange={(e) => setSdm(e.target.checked)}
-                                    name="sdm"
-                                    size="small"
-                                  />
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                            <Grid item>
-                              <Grid item container alignItems="center" justifyContent="space-between">
-                                <Grid item>
-                                  <Typography variant="subtitle1">Allow Notifications</Typography>
-                                </Grid>
-                                <Grid item>
-                                  <Switch
-                                    checked={notification}
-                                    onChange={(e) => setNotification(e.target.checked)}
-                                    name="sdm"
-                                    size="small"
-                                  />
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                        </CardContent>
-                      </Card>
-                      <Divider /> */}
+                      <Divider />
+
                       <List
                         component="nav"
                         sx={{
@@ -282,47 +295,16 @@ const ProfileSection = () => {
                           }
                         }}
                       >
-                        <ListItemButton
-                          sx={{ borderRadius: `${customization.borderRadius}px` }}
-                          selected={selectedIndex === 0}
-                          onClick={(event) => handleListItemClick(event, 0, '#')}
-                        >
+                        <ListItemButton sx={{ borderRadius: `${customization.borderRadius}px` }} onClick={handleEditModal}>
                           <ListItemIcon>
                             <IconSettings stroke={1.5} size="1.3rem" />
                           </ListItemIcon>
                           <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
                         </ListItemButton>
-                        {/* <ListItemButton
-                          sx={{ borderRadius: `${customization.borderRadius}px` }}
-                          selected={selectedIndex === 1}
-                          onClick={(event) => handleListItemClick(event, 1, '#')}
-                        >
-                          <ListItemIcon>
-                            <IconUser stroke={1.5} size="1.3rem" />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Grid container spacing={1} justifyContent="space-between">
-                                <Grid item>
-                                  <Typography variant="body2">Social Profile</Typography>
-                                </Grid>
-                                <Grid item>
-                                  <Chip
-                                    label="02"
-                                    size="small"
-                                    sx={{
-                                      bgcolor: theme.palette.warning.dark,
-                                      color: theme.palette.background.default
-                                    }}
-                                  />
-                                </Grid>
-                              </Grid>
-                            }
-                          />
-                        </ListItemButton> */}
+
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
-                          selected={selectedIndex === 4}
+                          // selected={selectedIndex === 4}
                           onClick={handleLogout}
                         >
                           <ListItemIcon>
@@ -339,6 +321,91 @@ const ProfileSection = () => {
           </Transitions>
         )}
       </Popper>
+
+      <Modal open={openEdit} onClose={handleEditClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+        <Box sx={{ ...style, mt: 2, width: '80%' }}>
+          <Grid container spacing={2} direction="column">
+            <Typography id="modal-modal-title" variant="h3" component="h2">
+              Edit Account Details:
+            </Typography>
+            <Grid item sx={{ margin: '20px 0' }}>
+              <TextField
+                label="First Name"
+                variant="outlined"
+                name="fname"
+                value={formData.fname}
+                onChange={(e) => handleChange(e)}
+                style={{ width: '36%' }}
+              />
+              <TextField
+                label="Last Name"
+                variant="outlined"
+                name="lname"
+                value={formData.lname}
+                onChange={(e) => handleChange(e)}
+                style={{ width: '36%', marginLeft: '24px' }}
+              />
+            </Grid>
+            <Grid item sx={{ margin: '20px 0' }}>
+              <TextField
+                label="Email"
+                variant="outlined"
+                name="email"
+                value={formData.email}
+                onChange={(e) => handleChange(e)}
+                style={{ width: '75%' }}
+                disabled
+              />
+            </Grid>
+
+            <Grid item sx={{ margin: '20px 0' }}>
+              <TextField
+                label="Mobile Number"
+                variant="outlined"
+                name="mobile"
+                value={formData.mobile}
+                onChange={(e) => handleChange(e, null, null)}
+                style={{ width: '75%' }}
+              />
+            </Grid>
+            <Grid item sx={{ margin: '20px 0' }}>
+              <TextField
+                label="Password"
+                variant="outlined"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                type={showPassword ? 'text' : 'password'}
+                style={{ width: '75%' }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton aria-label="toggle password visibility" onClick={handleTogglePasswordVisibility} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+          </Grid>
+          <Grid item sx={{ margin: '20px 0' }}>
+            <Grid sx={{ mt: 2 }}>
+              <Button variant="contained" onClick={handleEditSubmit} sx={{ mr: 2 }}>
+                Submit
+              </Button>
+              <Button
+                size=""
+                variant="contained"
+                onClick={() => handleEditClose()}
+                sx={{ bgcolor: 'red', '&:hover': { backgroundColor: 'red' } }}
+              >
+                Close
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
     </>
   );
 };

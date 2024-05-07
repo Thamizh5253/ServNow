@@ -39,7 +39,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL INCOME DARK CARD ||============================== //
 
-const TotalIncomeDarkCard = ({ isLoading, completed }) => {
+const CompletedService = ({ isLoading, completed }) => {
   const theme = useTheme();
 
   return (
@@ -71,12 +71,12 @@ const TotalIncomeDarkCard = ({ isLoading, completed }) => {
                     mb: 0.45
                   }}
                   primary={
-                    <Typography variant="h4" sx={{ color: '#fff' }}>
+                    <Typography variant="h3" sx={{ color: '#fff' }}>
                       {completed}
                     </Typography>
                   }
                   secondary={
-                    <Typography variant="subtitle2" sx={{ color: 'primary.light', mt: 0.25 }}>
+                    <Typography variant="subtitle2" sx={{ fontSize: '15px', color: 'primary.light', mt: 0.25 }}>
                       Completed Service
                     </Typography>
                   }
@@ -90,8 +90,8 @@ const TotalIncomeDarkCard = ({ isLoading, completed }) => {
   );
 };
 
-TotalIncomeDarkCard.propTypes = {
+CompletedService.propTypes = {
   isLoading: PropTypes.bool
 };
 
-export default TotalIncomeDarkCard;
+export default CompletedService;

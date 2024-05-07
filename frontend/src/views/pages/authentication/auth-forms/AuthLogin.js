@@ -1,5 +1,5 @@
 import { useState } from 'react';
-// import { useSelector } from 'react-redux';
+
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -9,7 +9,6 @@ import {
   Box,
   Button,
   Checkbox,
-  // Divider,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -20,7 +19,6 @@ import {
   OutlinedInput,
   Stack,
   Typography
-  // useMediaQuery
 } from '@mui/material';
 
 // third party
@@ -28,43 +26,28 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
-// import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-// import Google from 'assets/images/icons/social-google.svg';
 import { useNavigate } from 'react-router-dom';
-// import { useHistory } from 'react-router-dom';
 
 import { useContext } from 'react';
 import UsernameContext from '../../../context/context';
 import { useCookies } from 'react-cookie';
-// import axios from 'axios';
-// import UsernameContext from './views/context/context';
+
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
   const { setRole, setAuth } = useContext(UsernameContext);
   const [, setCookie] = useCookies(['token']);
   axios.defaults.withCredentials = true;
-  // const { username, setUsername } = useContext(UsernameContext);
   const navigate = useNavigate();
-  // const history = useHistory();
   const theme = useTheme();
-  // const scriptedRef = useScriptRef();
-  // const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-  // const customization = useSelector((state) => state.customization);
+
   const [checked, setChecked] = useState(false);
-
-  // const googleHandler = async () => {
-  //   console.error('Login');
-  //   console.error(username);
-
-  //   // setUsername('tech');
-  // };
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
@@ -78,57 +61,6 @@ const FirebaseLogin = ({ ...others }) => {
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        {/* <Grid item xs={12}> */}
-        {/* <AnimateButton>
-            <Button
-              disableElevation
-              fullWidth
-              onClick={googleHandler}
-              size="large"
-              variant="outlined"
-              sx={{
-                color: 'grey.700',
-                backgroundColor: theme.palette.grey[50],
-                borderColor: theme.palette.grey[100]
-              }}
-            >
-              <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
-              </Box>
-              Sign in with Google
-            </Button>
-          </AnimateButton> */}
-        {/* </Grid>
-        <Grid item xs={12}>
-          <Box
-            sx={{
-              alignItems: 'center',
-              display: 'flex'
-            }}
-          >
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-
-            <Button
-              variant="outlined"
-              sx={{
-                cursor: 'unset',
-                m: 2,
-                py: 0.5,
-                px: 7,
-                borderColor: `${theme.palette.grey[100]} !important`,
-                color: `${theme.palette.grey[900]}!important`,
-                fontWeight: 500,
-                borderRadius: `${customization.borderRadius}px`
-              }}
-              disableRipple
-              disabled
-            >
-              OR
-            </Button>
-
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-          </Box>
-        </Grid> */}
         <Grid item xs={12} container alignItems="center" justifyContent="center">
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle1">Sign in with Email address</Typography>
@@ -154,11 +86,10 @@ const FirebaseLogin = ({ ...others }) => {
               },
               body: JSON.stringify(values)
             });
-            // console.log(values);
+
             const responseData = await response.json(); // Parse response data
 
             if (response.ok) {
-              // console.log('Login successful');
               const token = responseData.token; // Extract token from response data
               if (!token) {
                 toast.warn('Invalid Credentails!', {
@@ -170,9 +101,7 @@ const FirebaseLogin = ({ ...others }) => {
                   draggable: true,
                   progress: undefined,
                   theme: 'light'
-                  // transition: Bounce
                 });
-                // throw new Error('Token not found in response');
               } else {
                 setCookie('token', token, { path: '/' });
                 setAuth(true);
@@ -186,7 +115,6 @@ const FirebaseLogin = ({ ...others }) => {
                   draggable: true,
                   progress: undefined,
                   theme: 'light'
-                  // transition: Bounce
                 });
                 navigate('/dashboard/default', { replace: true });
               }

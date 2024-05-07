@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import PropTypes from 'prop-types'; // import PropTypes
 import axios from 'axios';
 // material-ui
 import { Grid } from '@mui/material';
@@ -43,13 +42,10 @@ const NewService = () => {
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [formattedDate, setFormattedDate] = useState('');
   const [results, setResults] = useState([]);
-  // const [changeInTable, setchangeInTable] = useState(false);
-  // let formattedDate;
   const handleDateChange = (date) => {
     setSelectedDate(date);
     const formatted = dayjs(date).format('DD-MM-YYYY');
     setFormattedDate(formatted);
-    // console.log(formattedDate);
   };
 
   const [open, setOpen] = React.useState(false);
@@ -79,7 +75,6 @@ const NewService = () => {
         draggable: true,
         progress: undefined,
         theme: 'light'
-        // transition: Bounce
       });
     } catch (error) {
       toast.error('Error in placing the order', {
@@ -91,7 +86,6 @@ const NewService = () => {
         draggable: true,
         progress: undefined,
         theme: 'light'
-        // transition: Bounce
       });
       console.error('Error sending booking data:', error);
     }
@@ -105,7 +99,6 @@ const NewService = () => {
         const response = await fetch(`http://localhost:5000/api/manageservices`);
         const data = await response.json();
         setResults(data);
-        // console.log(data);
       } catch (error) {
         console.error('Error fetching results:', error);
       }

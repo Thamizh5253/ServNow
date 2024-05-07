@@ -61,7 +61,6 @@ const ResultsTable = () => {
             onChange={handleStatusChange}
             placeholder="All"
             sx={{ marginLeft: '20px', width: '150px' }}
-            // sx={{ position: 'relative', top: '60px', right: '50px' }}
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="0">Pending</MenuItem>
@@ -101,7 +100,6 @@ const ResultsTable = () => {
                       {result.status === 1 && (
                         <Button
                           style={{
-                            // fontSize: '15px',
                             color: 'orange',
                             border: '1px solid orange',
                             padding: '5px 10px ',

@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-// const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const cloudinary = require("./cloudinary");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -47,7 +47,6 @@ app.post("/img/upload", async (req, res) => {
       folder: "/ServNow",
     });
 
-    // console.log(cloudinary_res.secure_url);
     res.status(200).json({
       message: "Image uploaded successfully",
       data: cloudinary_res.secure_url,
@@ -61,7 +60,6 @@ app.post("/img/upload", async (req, res) => {
 // POST endpoint to receive add new service data
 app.post("/api/addService", (req, res) => {
   const serviceData = req.body;
-  console.log(serviceData);
   // Create a new document using the NewService model
   const addService = new ServiceType(serviceData);
 
@@ -72,10 +70,10 @@ app.post("/api/addService", (req, res) => {
       res.status(200).send("Booking data received and saved successfully");
     })
     .catch((err) => {
-      // console.error("Error saving booking data:", err);
       res.status(500).send("Error saving booking data");
     });
 });
+
 //Edit the service
 app.post("/api/storeEditedData", async (req, res) => {
   try {
@@ -96,6 +94,30 @@ app.post("/api/storeEditedData", async (req, res) => {
     res.status(500).send("Error while updating service");
   }
 });
+app.post("/api/storeEditedUserData", async (req, res) => {
+  try {
+    const { username, formData } = req.body;
+
+    // Update the document in MongoDB with the provided ID
+    const updatedUser = await UserRegister.findOneAndUpdate(
+      { email: username },
+      formData,
+      {
+        new: true,
+      }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).send("User not found");
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Error while updating user:", error);
+    res.status(500).send("Error while updating user");
+  }
+});
+
 // PUT endpoint to delete a document from ServiceType collection
 app.put("/api/deleteservice/:id", async (req, res) => {
   const id = req.params.id;
@@ -151,10 +173,29 @@ app.get("/api/fetchServiceForEdit/:id", async (req, res) => {
   }
 });
 
+// GET endpoint to retrieve user account data to edit
+app.get("/api/fetchEditAccountInfo/:username", async (req, res) => {
+  const email = req.params.username;
+
+  try {
+    // Find the document by ID
+    const accountData = await UserRegister.findOne({ email: email });
+
+    if (!accountData) {
+      return res.status(404).json({ error: "Service type not found" });
+    }
+
+    // Send the found document as a response
+    res.json(accountData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch account data" });
+  }
+});
+
 // POST endpoint to receive booking data
 app.post("/api/newservice", (req, res) => {
   const bookingData = req.body;
-  console.log(bookingData);
   // Create a new document using the NewService model
   const newService = new NewService(bookingData);
 
@@ -162,7 +203,6 @@ app.post("/api/newservice", (req, res) => {
   newService
     .save()
     .then((savedService) => {
-      console.log("Booking data saved successfully:", savedService);
       const message = `
 Dear Admin,
 
@@ -200,7 +240,6 @@ app.put("/api/changestatus/:id", async (req, res) => {
   try {
     // Fetch the document with the provided id
     const result = await NewService.findById(id);
-    console.log(result);
     if (result.status === 1) {
       const message = `
 Dear Customer,
@@ -243,7 +282,6 @@ app.get("/api/servicehistory/:username", async (req, res) => {
   const username = req.params.username;
   try {
     const results = await NewService.find({ user: username });
-    // console.log(results);
     res.json(results);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -308,12 +346,11 @@ app.post("/api/register", async (req, res) => {
     }
 
     // Hash the password
-    // const hashedPassword = await bcrypt.hash(password, 10);
-
+    const hashedPassword = await bcrypt.hash(password, 10);
     // Create a new user document with hashed password
     const newUser = new UserRegister({
       email,
-      password,
+      password: hashedPassword,
       fname,
       lname,
       mobile,
@@ -334,8 +371,6 @@ app.post("/api/register", async (req, res) => {
 
 app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
-  // console.log(email);
-  // console.log(password);
 
   // Find user by email
   const user = await UserRegister.findOne({ email });
@@ -344,39 +379,32 @@ app.post("/api/login", async (req, res) => {
   if (!user) {
     return res.status(200).json({ message: "Invalid credentials" });
   }
-  // console.log(user.password);
 
   // Compare hashed password with the provided password
-  // bcrypt.compare(password, user.password, (err, result) => {
-  //   if (err || !result) {
-  //     return res.status(200).json({ message: "Invalidpass credentials" });
-  //   }
-  if (password === user.password) {
-    // Generate JWT token
-    const name = user.email;
-    const role = user.role;
-    console.log(role);
-    const token = jwt.sign({ name, role }, "secret_key", {
-      expiresIn: "5h",
-    });
-    console.log(token);
-    // Set token in cookie
-    res.cookie("token", token);
+  bcrypt.compare(password, user.password, (err, result) => {
+    if (err || !result) {
+      return res.status(200).json({ message: "Invalid credentials" });
+    } else {
+      // Generate JWT token
+      const name = user.email;
+      const role = user.role;
+      const token = jwt.sign({ name, role }, "secret_key", {
+        expiresIn: "5h",
+      });
+      // Set token in cookie
+      res.cookie("token", token);
 
-    // Send success response
-    res.status(200).json({ message: "Login successful", token, role });
-  } else {
-    return res.status(200).json({ message: "Invalid credentials" });
-  }
-  // });
+      // Send success response
+      res.status(200).json({ message: "Login successful", token, role });
+    }
+  });
 });
 
 // Middleware to authenticate JWT token
 function authenticateToken(req, res, next) {
-  // console.log("Cookies received:", req.cookies); // Log cookies received with the request
+  // Log cookies received with the request
 
   const token = req.cookies.token;
-  // console.log("Token received:", token); // Log token value
 
   if (!token) {
     return res.status(200).json({ message: "Unauthorized" });
@@ -386,10 +414,7 @@ function authenticateToken(req, res, next) {
     if (err) {
       console.error("Token verification failed:", err.message); // Log error message
       return res.status(403).json({ message: "Forbidden" });
-    }
-    // console.log("Token user:", decoded); // Log token value
-    else {
-      console.log("Token value:", decoded);
+    } else {
       req.name = decoded.name;
       req.role = decoded.role;
 
@@ -401,15 +426,11 @@ function authenticateToken(req, res, next) {
 // Route for dashboard
 app.get("/", authenticateToken, (req, res) => {
   // The decoded token information is available in req.user
-  // const username = req.user.username;
-  // console.log(" received:", req); // Log cookies received with the request
   return res.json({ Status: "Success", name: req.name, role: req.role });
-  // res.status(200).json({ message: "Welcome to the dashboard", username });
 });
 // Define a logout route
 app.get("/logout", (req, res) => {
   // Clear the token cookie by setting an expired token
-  // res.cookie("token", "", { expires: new Date(0) });
   res.clearCookie("token");
   res.json({ message: "Logout successful" });
 });
@@ -421,7 +442,6 @@ app.get("/api/totalservice/count/:username", async (req, res) => {
     const counted = await NewService.countDocuments({
       user: username,
     });
-    // console.log(username, counted);
     res.json({ counted });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch results count" });
@@ -443,7 +463,6 @@ app.get("/api/status/count/:username", async (req, res) => {
     let pending = 0;
     let ready = 0;
     let completed = 0;
-    // console.log(results);
     // Loop through the results and update the count variables
     results.forEach((result) => {
       if (result._id === 0) pending = result.count;
@@ -462,7 +481,6 @@ app.get("/api/status/count/:username", async (req, res) => {
 app.get("/api/admin/totalservice/count/", async (req, res) => {
   try {
     const counted = await NewService.countDocuments();
-    // console.log(username, counted);
     res.json({ counted });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch results count" });
@@ -477,7 +495,6 @@ app.get("/api/admin/status/count/", async (req, res) => {
     const results = await NewService.aggregate([
       { $group: { _id: "$status", count: { $sum: 1 } } }, // Group by status and count the documents
     ]);
-    console.log(results);
     // Prepare variables to store the count for each status
     let pending = 0;
     let ready = 0;

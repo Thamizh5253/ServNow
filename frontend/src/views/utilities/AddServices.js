@@ -5,9 +5,6 @@ import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 import MainCard from 'ui-component/cards/MainCard';
 
-// import { useTheme } from '@mui/material/styles';
-// import useMediaQuery from '@mui/material/useMediaQuery';
-
 const AddService = () => {
   const [formData, setFormData] = useState({
     service_name: '',
@@ -44,17 +41,13 @@ const AddService = () => {
         draggable: true,
         progress: undefined,
         theme: 'light'
-        // transition: Bounce
       });
 
-      // console.log(res.data.data);
       setFormData({
         ...formData,
         service_image: res.data.data
       });
-      // console.log(formData);
     } catch (err) {
-      // console.log(err);
       toast.error('There is a problem, Try Again!', {
         position: 'top-right',
         autoClose: 5000,
@@ -64,7 +57,6 @@ const AddService = () => {
         draggable: true,
         progress: undefined,
         theme: 'light'
-        // transition: Bounce
       });
     }
   };
@@ -83,7 +75,6 @@ const AddService = () => {
     if (!preview) {
       console.log('provide all data');
     }
-    console.log(formData);
 
     try {
       const response = await fetch('http://localhost:5000/api/addService', {
@@ -93,7 +84,6 @@ const AddService = () => {
         },
         body: JSON.stringify(formData)
       });
-      console.log(response);
       if (response.ok) {
         toast.success('Service Added successfully!', {
           position: 'top-right',
@@ -105,8 +95,6 @@ const AddService = () => {
           progress: undefined,
           theme: 'light'
         });
-
-        console.log('Service Added successfully');
       } else {
         toast.error(` Please provide required Datas !`, {
           position: 'top-right',

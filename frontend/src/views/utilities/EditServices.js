@@ -18,7 +18,6 @@ import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
 
 const ResultsTable = () => {
-  // const { username } = useContext(UsernameContext);
   const [results, setResults] = useState([]);
   const [changeInTable, setchangeInTable] = useState(false);
   const [imgurl, setUrl] = useState('');
@@ -27,7 +26,6 @@ const ResultsTable = () => {
   const [openDelete, setOpenDelete] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
 
-  // const [statusFilter, setStatusFilter] = useState(''); // State for status filter
   const style = {
     position: 'absolute',
     top: '50%',
@@ -72,16 +70,12 @@ const ResultsTable = () => {
         draggable: true,
         progress: undefined,
         theme: 'light'
-        // transition: Bounce
       });
-      // console.log(res.data.data);
       setFormData({
         ...formData,
         service_image: res.data.data
       });
-      // console.log(formData);
     } catch (err) {
-      // console.log(err);
       toast.error('There is a problem, Try Again!', {
         position: 'top-right',
         autoClose: 5000,
@@ -91,7 +85,6 @@ const ResultsTable = () => {
         draggable: true,
         progress: undefined,
         theme: 'light'
-        // transition: Bounce
       });
     }
   };
@@ -107,7 +100,6 @@ const ResultsTable = () => {
   const handleEditSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData);
 
     try {
       const response = await fetch('http://localhost:5000/api/storeEditedData', {
@@ -117,7 +109,6 @@ const ResultsTable = () => {
         },
         body: JSON.stringify({ id: id, formData: formData })
       });
-      // console.log(response);
       if (response.ok) {
         toast.success('Service Edited successfully!', {
           position: 'top-right',
@@ -131,7 +122,6 @@ const ResultsTable = () => {
         });
         setchangeInTable(!changeInTable);
         handleEditClose();
-        // console.log('Service Edited successfully');
       } else {
         toast.error(` Please provide required Datas !`, {
           position: 'top-right',
@@ -143,7 +133,6 @@ const ResultsTable = () => {
           progress: undefined,
           theme: 'light'
         });
-        // console.log('Please provide required Datas');
       }
     } catch (error) {
       console.error('Error while Adding:', error);
@@ -165,13 +154,11 @@ const ResultsTable = () => {
 
   // Update results when username changes
   const handleOpen = (id) => {
-    // console.log(id);
     setUrl(id);
     setOpen(true);
   };
 
   const handleDeleteModal = (id) => {
-    // console.log(id);
     setId(id);
     setOpenDelete(true);
   };
@@ -180,11 +167,9 @@ const ResultsTable = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/fetchServiceForEdit/${id}`);
       setFormData(response.data);
-      // setLoading(false);
     } catch (err) {
       console.log(err);
     }
-    console.log(id);
     setId(id);
     setOpenEdit(true);
   };
@@ -196,7 +181,6 @@ const ResultsTable = () => {
     // Increment the status by 1
     try {
       await axios.put(`http://localhost:5000/api/deleteService/${id}`);
-      // console.log('Service deleted successfully');
       toast.success('Service Deleted successfully!', {
         position: 'top-right',
         autoClose: 5000,
@@ -214,12 +198,7 @@ const ResultsTable = () => {
 
     handleDeleteClose();
   };
-  // // Filter results based on the status filter value
-  // const statusFilteredResults = results.filter((result) => {
-  //   // If no filter is selected, return true for all elements
-  //   if (statusFilter === '') return true;
-  //   return result.status === parseInt(statusFilter, 10);
-  // });
+  
 
   return (
     <div>
@@ -267,9 +246,7 @@ const ResultsTable = () => {
                         <Button size="medium" variant="contained" onClick={() => handleEditModal(result._id)} sx={{ marginRight: '15px' }}>
                           Edit
                         </Button>
-                        {/* </Grid>
-                      <Grid> */}
-                        <Button
+                          <Button
                           sx={{ color: 'white', bgcolor: 'red', '&:hover': { backgroundColor: 'red' } }}
                           onClick={() => handleDeleteModal(result._id)}
                         >

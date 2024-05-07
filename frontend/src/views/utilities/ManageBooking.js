@@ -23,12 +23,10 @@ const ResultsTable = () => {
   const [changeInTable, setchangeInTable] = React.useState(false);
   const [id, setId] = React.useState('');
   const handleOpen = (id) => {
-    // console.log(id);
     setId(id);
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
-  // const { username } = useContext(UsernameContext);
   const handleManageTask = async () => {
     // Increment the status by 1
     try {
@@ -43,18 +41,14 @@ const ResultsTable = () => {
         progress: undefined,
         theme: 'light'
       });
-      // console.log('Status updated successfully');
       setchangeInTable(!changeInTable);
     } catch (error) {
       console.error('Error updating status:', error);
     }
 
     handleClose();
-    // setSelectedDate(null);
-    // setFormattedDate('');
   };
 
-  // const { username } = useContext(UsernameContext);
   const style = {
     position: 'absolute',
     top: '50%',
@@ -75,7 +69,6 @@ const ResultsTable = () => {
         const response = await fetch(`http://localhost:5000/api/managetask`);
         const data = await response.json();
         setResults(data);
-        // console.log(data[_id]);
       } catch (error) {
         console.error('Error fetching results:', error);
       }
@@ -110,12 +103,10 @@ const ResultsTable = () => {
             onChange={handleStatusChange}
             placeholder="All"
             sx={{ marginLeft: '20px', width: '150px' }}
-            // sx={{ position: 'relative', top: '60px', right: '50px' }}
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="0">Pending</MenuItem>
             <MenuItem value="1">Ready to Delivery</MenuItem>
-            {/* <MenuItem value="2">Service Completed</MenuItem> */}
           </TextField>
         }
       >
@@ -152,7 +143,6 @@ const ResultsTable = () => {
                             padding: '5px 42px',
                             borderRadius: '4px',
                             cursor: 'pointer'
-                            // display: 'inline-block'
                           }}
                           onClick={() => handleOpen(result._id)}
                         >

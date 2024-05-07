@@ -12,13 +12,12 @@ import themes from 'themes';
 // project imports
 import NavigationScroll from 'layout/NavigationScroll';
 import React from 'react';
-// import UsernameContext from './views/context/context'; // Import the UsernameContext properly
-import { UsernameProvider } from './views/context/context'; // ==============================|| APP ||============================== //
-// const UsernameContext = createContext();
+import { UsernameProvider } from './views/context/context';
+
+// ==============================|| APP ||============================== //
 
 const App = () => {
   const customization = useSelector((state) => state.customization);
-  // const [username, setUserName] = useState('Jesse');
 
   return (
     <UsernameProvider>
