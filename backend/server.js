@@ -94,6 +94,7 @@ app.post("/api/storeEditedData", async (req, res) => {
     res.status(500).send("Error while updating service");
   }
 });
+
 app.post("/api/storeEditedUserData", async (req, res) => {
   try {
     const { username, formData } = req.body;
@@ -115,6 +116,45 @@ app.post("/api/storeEditedUserData", async (req, res) => {
   } catch (error) {
     console.error("Error while updating user:", error);
     res.status(500).send("Error while updating user");
+  }
+});
+//changepassword
+
+app.post("/api/changepassword", async (req, res) => {
+  try {
+    const { username, passwordData } = req.body;
+    const { currentPassword, newPassword } = passwordData;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).send("Please provide required Datas !");
+    }
+
+    // Find the user by username (email)
+    const user = await UserRegister.findOne({ email: username });
+    if (!user) {
+      return res.status(400).send("User not found");
+    }
+
+    // Check if the provided current password matches the stored encrypted password
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    if (!isPasswordValid) {
+      return res.status(400).send("Current password is incorrect");
+    }
+
+    // Hash the new password before updating
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error while updating user password:", error);
+    res.status(500).send("Error while updating user password");
   }
 });
 
