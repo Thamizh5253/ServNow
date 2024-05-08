@@ -82,3 +82,7 @@ Password: Tham@123
 
 **Authentication:** Implemented JWT token generation and stored it in cookies for user authentication.
 
+## Contact
+If you have any queries or need assistance, please contact us at thamizh5253@gmail.com
+
+**Phone:** +919342625253
