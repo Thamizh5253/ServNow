@@ -39,7 +39,8 @@ import User1 from 'assets/images/users/user-round.svg';
 // assets
 import { IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { IconLogout, IconSettings } from '@tabler/icons-react';
+import { IconLogout, IconSettings, IconLock } from '@tabler/icons-react';
+
 import axios from 'axios';
 import { useContext } from 'react';
 import UsernameContext from '../../../../views/context/context';
@@ -55,10 +56,14 @@ const ProfileSection = () => {
     email: '',
     fname: '',
     lname: '',
-    mobile: '',
-    password: ''
+    mobile: ''
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: ''
   });
   const [openEdit, setOpenEdit] = React.useState(false);
+  const [openEditPassword, setOpenEditPassword] = React.useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -67,39 +72,52 @@ const ProfileSection = () => {
       [name]: value
     });
   };
+  const handleChangePassword = (event) => {
+    const { name, value } = event.target;
+    setPasswordData({
+      ...passwordData,
+      [name]: value
+    });
+    // console.log(passwordData);
+  };
   const [showPassword, setShowPassword] = useState(false);
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const handleToggleNewPasswordVisibility = () => {
+    setShowNewPassword((prevShowNewPassword) => !prevShowNewPassword);
   };
   const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 300,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4
   };
+
   const handleEditModal = async () => {
     //fetching data to Edit
     try {
       const response = await axios.get(`http://localhost:5000/api/fetchEditAccountInfo/${username}`);
       setFormData(response.data);
-      // setLoading(false);
     } catch (err) {
       console.log(err);
     }
-    console.log(username);
-    // setId(id);
+
     setOpenEdit(true);
+  };
+
+  const handlePassWordModal = async () => {
+    setOpenEditPassword(true);
   };
 
   const handleEditSubmit = async (event) => {
     event.preventDefault();
-
-    console.log(formData);
 
     try {
       const response = await fetch('http://localhost:5000/api/storeEditedUserData', {
@@ -109,7 +127,6 @@ const ProfileSection = () => {
         },
         body: JSON.stringify({ username: username, formData: formData })
       });
-      // console.log(response);
       if (response.ok) {
         toast.success('User Data Edited successfully!', {
           position: 'top-right',
@@ -121,9 +138,7 @@ const ProfileSection = () => {
           progress: undefined,
           theme: 'light'
         });
-        // setchangeInTable(!changeInTable);
         handleEditClose();
-        // console.log('Service Edited successfully');
       } else {
         toast.error(` Please provide required Datas !`, {
           position: 'top-right',
@@ -135,14 +150,65 @@ const ProfileSection = () => {
           progress: undefined,
           theme: 'light'
         });
-        // console.log('Please provide required Datas');
       }
     } catch (error) {
       console.error('Error while Adding:', error);
     }
   };
-  const handleEditClose = () => setOpenEdit(false);
 
+  const handleEditSubmitPassword = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:5000/api/changepassword', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: username, passwordData: passwordData })
+      });
+      if (response.ok) {
+        toast.success('Password updated successfully!', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light'
+        });
+        handleEditClosePassword();
+      } else {
+        const errorMessage = await response.text(); // Get the response message
+        toast.error(errorMessage || 'An error occurred while updating the password', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light'
+        });
+      }
+    } catch (error) {
+      console.error('Error while Adding:', error);
+    }
+  };
+
+  //closing the modal
+  const handleEditClose = () => setOpenEdit(false);
+  const handleEditClosePassword = () => {
+    setOpenEditPassword(false);
+    // Reset passwordData to its initial state
+    setPasswordData({
+      currentPassword: '',
+      newPassword: ''
+    });
+    handleTogglePasswordVisibility();
+    handleToggleNewPasswordVisibility();
+  };
   useEffect(() => {
     const fetchUsername = async () => {
       try {
@@ -300,8 +366,13 @@ const ProfileSection = () => {
                             <IconSettings stroke={1.5} size="1.3rem" />
                           </ListItemIcon>
                           <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
+                        </ListItemButton>{' '}
+                        <ListItemButton sx={{ borderRadius: `${customization.borderRadius}px` }} onClick={handlePassWordModal}>
+                          <ListItemIcon>
+                            <IconLock stroke={1.5} size="1.3rem" />
+                          </ListItemIcon>
+                          <ListItemText primary={<Typography variant="body2">Change Password</Typography>} />
                         </ListItemButton>
-
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           // selected={selectedIndex === 4}
@@ -368,26 +439,6 @@ const ProfileSection = () => {
                 style={{ width: '75%' }}
               />
             </Grid>
-            <Grid item sx={{ margin: '20px 0' }}>
-              <TextField
-                label="Password"
-                variant="outlined"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                type={showPassword ? 'text' : 'password'}
-                style={{ width: '75%' }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton aria-label="toggle password visibility" onClick={handleTogglePasswordVisibility} edge="end">
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
           </Grid>
           <Grid item sx={{ margin: '20px 0' }}>
             <Grid sx={{ mt: 2 }}>
@@ -398,6 +449,76 @@ const ProfileSection = () => {
                 size=""
                 variant="contained"
                 onClick={() => handleEditClose()}
+                sx={{ bgcolor: 'red', '&:hover': { backgroundColor: 'red' } }}
+              >
+                Close
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
+      <Modal
+        open={openEditPassword}
+        onClose={handleEditClosePassword}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={{ ...style, mt: 2, width: '30%' }}>
+          <Grid container spacing={2} direction="column">
+            <Typography id="modal-modal-title" variant="h3" component="h2">
+              Change Password:
+            </Typography>
+
+            <Grid item sx={{ margin: '20px 0' }}>
+              <TextField
+                label="Current Password"
+                variant="outlined"
+                name="currentPassword"
+                value={passwordData.currentPassword}
+                onChange={handleChangePassword}
+                type={showPassword ? 'text' : 'password'}
+                style={{ width: '90%' }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton aria-label="toggle password visibility" onClick={handleTogglePasswordVisibility} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <Grid item sx={{ margin: '20px 0' }}>
+                <TextField
+                  label="New Password"
+                  variant="outlined"
+                  name="newPassword"
+                  value={passwordData.newPassword}
+                  onChange={handleChangePassword}
+                  type={showNewPassword ? 'text' : 'password'}
+                  style={{ width: '90%' }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton aria-label="toggle password visibility" onClick={handleToggleNewPasswordVisibility} edge="end">
+                          {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item sx={{ margin: '20px 0' }}>
+            <Grid sx={{ mt: 2 }}>
+              <Button variant="contained" onClick={handleEditSubmitPassword} sx={{ mr: 2 }}>
+                Submit
+              </Button>
+              <Button
+                size=""
+                variant="contained"
+                onClick={() => handleEditClosePassword()}
                 sx={{ bgcolor: 'red', '&:hover': { backgroundColor: 'red' } }}
               >
                 Close
