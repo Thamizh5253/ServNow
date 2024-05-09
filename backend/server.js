@@ -299,7 +299,7 @@ Customer Service Team
 ServNow
 `;
 
-      sendEmail(result.user, "Your order is Now Pickup your Bike", message);
+      sendEmail(result.user, "Your order is Now Ready to Pickup your Bike", message);
     }
     // Update the document with the provided id
     const updatedDocument = await NewService.findByIdAndUpdate(id, {
