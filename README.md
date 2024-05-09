@@ -82,6 +82,13 @@ Password: Tham@123
 
 **Authentication:** Implemented JWT token generation and stored it in cookies for user authentication.
 
+**Atlas connection string:** 
+
+```bash
+# you can access mongoDB compass by this connection string
+mongodb+srv://Tham:Tham@cluster1.rqehbqf.mongodb.net/?retryWrites=true&w=majority
+```
+
 ## Contact
 If you have any queries or need assistance, please contact us at thamizh5253@gmail.com
 
