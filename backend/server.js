@@ -280,7 +280,7 @@ app.put("/api/changestatus/:id", async (req, res) => {
   try {
     // Fetch the document with the provided id
     const result = await NewService.findById(id);
-    if (result.status === 1) {
+    if (result.status === 0) {
       const message = `
 Dear Customer,
 
