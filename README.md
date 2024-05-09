@@ -76,7 +76,7 @@ Password: Tham@123
 ## Additional Tools
 **UI Enhancement:** Utilized BerryDashboard and Material UI to improve the user interface.
 
-**Email Triggering:** Integrated Nodemailer for email notifications.
+**Email Triggering:** Integrated Nodemailer for email notifications. **(Check Spam mail If not received in Inbox)**
 
 **Image Storage:** Utilized Cloudinary for image storage.
 
