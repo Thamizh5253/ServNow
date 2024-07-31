@@ -14,7 +14,7 @@ export const UsernameProvider = ({ children }) => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:5000/')
+      .get('https://servnow-server.onrender.com')
       .then((res) => {
         if (res.data.Status === 'Success') {
           setAuth(true);
