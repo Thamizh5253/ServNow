@@ -11,7 +11,7 @@ const sendEmail = require("./nodemailer");
 const ServiceType = require("./Schema/serviceType");
 const UserRegister = require("./Schema/register");
 const NewService = require("./Schema/newservice");
-
+require('dotenv').config();
 const app = express();
 app.use(
   cors({
