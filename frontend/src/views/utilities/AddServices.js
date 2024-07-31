@@ -29,7 +29,7 @@ const AddService = () => {
     if (!preview) return;
 
     try {
-      const res = await axios.post('http://localhost:5000/img/upload', {
+      const res = await axios.post('https://servnow-server.onrender.com/img/upload', {
         image_url: preview
       });
       toast.success('Image Uploaded successfully', {
@@ -77,7 +77,7 @@ const AddService = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/addService', {
+      const response = await fetch('https://servnow-server.onrender.com/api/addService', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
