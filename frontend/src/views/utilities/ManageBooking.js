@@ -30,7 +30,7 @@ const ResultsTable = () => {
   const handleManageTask = async () => {
     // Increment the status by 1
     try {
-      await axios.put(`http://localhost:5000/api/changestatus/${id}`);
+      await axios.put(`https://servnow-server.onrender.com/api/changestatus/${id}`);
       toast.success('Status updated successfully!', {
         position: 'top-right',
         autoClose: 5000,
@@ -66,7 +66,7 @@ const ResultsTable = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/managetask`);
+        const response = await fetch(`https://servnow-server.onrender.com/api/managetask`);
         const data = await response.json();
         setResults(data);
       } catch (error) {
