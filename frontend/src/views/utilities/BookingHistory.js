@@ -21,7 +21,7 @@ const ResultsTable = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/bookinghistory`);
+        const response = await fetch(`https://servnow-server.onrender.com/api/bookinghistory`);
         const data = await response.json();
         setResults(data);
       } catch (error) {
