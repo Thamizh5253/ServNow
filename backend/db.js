@@ -1,13 +1,13 @@
 // db.js
-
+require('dotenv').config();
 const mongoose = require("mongoose");
-
+const conn_url = process.env.DATABASE_URL ;
 module.exports = {
   connect: () => {
     // Connect to MongoDB
     mongoose
       .connect(
-        "mongodb+srv://Tham:Tham@cluster1.rqehbqf.mongodb.net/ServNow?retryWrites=true&w=majority",
+        conn_url,
         // "mongodb://localhost:27017/ServiceNow",
 
         {
