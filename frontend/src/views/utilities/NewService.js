@@ -65,7 +65,7 @@ const NewService = () => {
     const bookingData = { type: type, status: 0, user: username, date: formattedDate };
 
     try {
-      await axios.post('http://localhost:5000/api/newservice', bookingData);
+      await axios.post('https://servnow-server.onrender.com/api/newservice', bookingData);
       toast.success('New Service placed successfully', {
         position: 'top-right',
         autoClose: 5000,
@@ -96,7 +96,7 @@ const NewService = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/manageservices`);
+        const response = await fetch(`https://servnow-server.onrender.com/api/manageservices`);
         const data = await response.json();
         setResults(data);
       } catch (error) {
