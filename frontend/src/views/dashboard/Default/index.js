@@ -26,14 +26,14 @@ const Dashboard = () => {
     const fetchResults = async () => {
       if (role === 'admin') {
         try {
-          const response = await fetch(`http://localhost:5000/api/admin/totalservice/count/`);
+          const response = await fetch(`https://servnow-server.onrender.com/api/admin/totalservice/count/`);
           const data = await response.json();
           setTotalService(data.counted);
         } catch (error) {
           console.error('Error fetching results:', error);
         }
         try {
-          const response = await fetch(`http://localhost:5000/api/admin/status/count/`);
+          const response = await fetch(`https://servnow-server.onrender.com/api/admin/status/count/`);
           const data = await response.json();
           setPending(data.pending);
           setCompleted(data.completed);
@@ -45,14 +45,14 @@ const Dashboard = () => {
       // for normal user
       else {
         try {
-          const response = await fetch(`http://localhost:5000/api/totalservice/count/${username}`);
+          const response = await fetch(`https://servnow-server.onrender.com/api/totalservice/count/${username}`);
           const data = await response.json();
           setTotalService(data.counted);
         } catch (error) {
           console.error('Error fetching results:', error);
         }
         try {
-          const response = await fetch(`http://localhost:5000/api/status/count/${username}`);
+          const response = await fetch(`https://servnow-server.onrender.com/api/status/count/${username}`);
           const data = await response.json();
           setPending(data.pending);
           setCompleted(data.completed);
