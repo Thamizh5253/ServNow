@@ -1,7 +1,8 @@
 // nodemailer.js
 
 const nodemailer = require("nodemailer");
-
+require('dotenv').config();
+const pass_key = process.env.Auth_Pass ;
 // Create a transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -9,7 +10,7 @@ const transporter = nodemailer.createTransport({
   secure: true, // true for 465, false for other ports
   auth: {
     user: "thamizhmass057@gmail.com",
-    pass: "egdd narw nrmp wjgc",
+    pass: pass_key,
   },
 });
 
