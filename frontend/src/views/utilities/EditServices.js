@@ -58,7 +58,7 @@ const ResultsTable = () => {
     if (!preview) return;
 
     try {
-      const res = await axios.post('http://localhost:5000/img/upload', {
+      const res = await axios.post('https://servnow-server.onrender.com/img/upload', {
         image_url: preview
       });
       toast.success('New Image Uploaded successfully', {
@@ -102,7 +102,7 @@ const ResultsTable = () => {
 
 
     try {
-      const response = await fetch('http://localhost:5000/api/storeEditedData', {
+      const response = await fetch('https://servnow-server.onrender.com/api/storeEditedData', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -141,7 +141,7 @@ const ResultsTable = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/manageservices`);
+        const response = await fetch(`https://servnow-server.onrender.com/api/manageservices`);
         const data = await response.json();
         setResults(data);
       } catch (error) {
@@ -165,7 +165,7 @@ const ResultsTable = () => {
   const handleEditModal = async (id) => {
     //fetching data to Edit
     try {
-      const response = await axios.get(`http://localhost:5000/api/fetchServiceForEdit/${id}`);
+      const response = await axios.get(`https://servnow-server.onrender.com/api/fetchServiceForEdit/${id}`);
       setFormData(response.data);
     } catch (err) {
       console.log(err);
@@ -180,7 +180,7 @@ const ResultsTable = () => {
   const handleDelete = async () => {
     // Increment the status by 1
     try {
-      await axios.put(`http://localhost:5000/api/deleteService/${id}`);
+      await axios.put(`https://servnow-server.onrender.com/api/deleteService/${id}`);
       toast.success('Service Deleted successfully!', {
         position: 'top-right',
         autoClose: 5000,
