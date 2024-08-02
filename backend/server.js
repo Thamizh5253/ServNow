@@ -433,16 +433,16 @@ app.post("/api/login", async (req, res) => {
       const token = jwt.sign({ name, role }, "secret_key", {
         expiresIn: "5h",
       });
-      // // Set token in cookie
-      // res.cookie("token", token);
+      // Set token in cookie
+      res.cookie("token", token);
 
       
-      // Set token in cookie with secure and httpOnly flags
-      res.cookie("token", token, {
-        httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
-        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-        sameSite: "strict", // Prevent CSRF
-      });
+      // // Set token in cookie with secure and httpOnly flags
+      // res.cookie("token", token, {
+      //   httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+      //   secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      //   sameSite: "strict", // Prevent CSRF
+      // });
       // Send success response
       res.status(200).json({ message: "Login successful", token, role });
     }
