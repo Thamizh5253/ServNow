@@ -455,9 +455,9 @@ function authenticateToken(req, res, next) {
 
   const token = req.cookies.token;
 
-  if (!token) {
-    return res.status(200).json({ message: "Unauthorized" });
-  }
+  // if (!token) {
+  //   return res.status(200).json({ message: "Unauthorized" });
+  // }
 
   jwt.verify(token, "secret_key", (err, decoded) => {
     if (err) {
