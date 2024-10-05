@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: 
       // "https://host-check-three.vercel.app",
-      "http://localhost:3000", // Allow requests from this origin
+      // "http://localhost:3000", // Allow requests from this origin
     methods: ["POST", "GET", "PUT"], // Allow these HTTP methods
     credentials: true, // Allow cookies to be sent with requests
   })
